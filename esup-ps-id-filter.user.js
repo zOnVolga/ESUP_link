@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ЕСУП-ПС Автофильтр по ID (ускоренная + точная фильтрация)
 // @namespace    http://tampermonkey.net/
-// @version      6.2
+// @version      6.3
 // @description  Быстрая фильтрация по ID в ЕСУП-ПС после полной загрузки таблицы
 // @author       Ваше имя
 // @match        https://esup-ps.megafon.ru/*
