@@ -7,8 +7,8 @@
 // @match        https://esup-ps.megafon.ru/*
 // @icon         https://esup-ps.megafon.ru/favicon.svg
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/zOnVolga/ESUP_link/master/esup-ps-id-filter.meta.js 
-// @downloadURL  https://raw.githubusercontent.com/zOnVol га/ESUP_link/master/esup-ps-id-filter.user.js
+// @updateURL    https://raw.githubusercontent.com/zOnVolga/ESUP_link/main/esup-ps-id-filter.user.js 
+// @downloadURL  https://raw.githubusercontent.com/zOnVolga/ESUP_link/main/esup-ps-id-filter.user.js 
 // ==/UserScript==
 
 (function () {
