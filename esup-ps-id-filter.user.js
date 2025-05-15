@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         ЕСУП-ПС Автофильтр по ID (ускоренная + точная фильтрация)
 // @namespace    http://tampermonkey.net/
-// @version      6.5
+// @version      6.6
 // @description  Быстрая фильтрация по ID в ЕСУП-ПС после полной загрузки таблицы
 // @author       Ваше имя
 // @match        https://esup-ps.megafon.ru/*
 // @icon         https://esup-ps.megafon.ru/favicon.svg
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/zOnVolga/ESUP_link/main/esup-ps-id-filter.user.js 
-// @downloadURL  https://raw.githubusercontent.com/zOnVolga/ESUP_link/main/esup-ps-id-filter.user.js 
+// @updateURL    https://github.com/zOnVolga/ESUP_link/raw/refs/heads/main/esup-ps-id-filter.user.js 
+// @downloadURL  https://github.com/zOnVolga/ESUP_link/raw/refs/heads/main/esup-ps-id-filter.user.js 
 // ==/UserScript==
 
 (function () {
