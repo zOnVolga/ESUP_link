@@ -1,14 +1,14 @@
 // ==UserScript==
-// @name         ЕСУП-ПС Автофильтр по ID (ускоренная + точная фильтрация)
+// @name         ЕСУП-ПС Автофильтр по ID (v.6.7 | 2025-05-25)
 // @namespace    http://tampermonkey.net/
-// @version      6.6
+// @version      6.7
 // @description  Быстрая фильтрация по ID в ЕСУП-ПС после полной загрузки таблицы
-// @author       Ваше имя
+// @author       zOnVolga
 // @match        https://esup-ps.megafon.ru/*
 // @icon         https://esup-ps.megafon.ru/favicon.svg
 // @grant        none
-// @updateURL    https://github.com/zOnVolga/ESUP_link/raw/refs/heads/main/esup-ps-id-filter.user.js 
-// @downloadURL  https://github.com/zOnVolga/ESUP_link/raw/refs/heads/main/esup-ps-id-filter.user.js 
+// @updateURL    https://github.com/zOnVolga/ESUP_link/raw/refs/heads/main/esup-ps-id-filter.user.js
+// @downloadURL  https://github.com/zOnVolga/ESUP_link/raw/refs/heads/main/esup-ps-id-filter.user.js
 // ==/UserScript==
 
 (function () {
@@ -29,6 +29,7 @@
 
     if (!vid_rabot || !ID) {
         console.log('Параметры vid_rabot или ID не найдены');
+        alert('❌ Ошибка: Параметры vid_rabot или ID не найдены');
         return;
     }
 
@@ -68,6 +69,11 @@
         const foundNode = findNodeInTree(treeData, sectionName.trim());
         if (!foundNode) {
             console.error(`Раздел "${sectionName}" не найден`);
+            alert(`❌ Ошибка:
+            Раздел "${sectionName}" не найден.
+
+            ⚠️ Убедитесь, что значение "Мероприятие" в таблице
+            соответствет названию в ЕСУП.`);
             return;
         }
 
@@ -75,6 +81,7 @@
         if (nodeElement) {
             treeView.select(nodeElement);
             console.log(`Раздел "${sectionName}" активирован через Kendo.select()`);
+            showBanner("Загружен раздел: " + sectionName);
         }
 
         // Вызываем функцию structDocTreeSelected_ContractService вручную
@@ -138,6 +145,7 @@
 
         // Кликаем по кнопке фильтра
         filterButton.click();
+        showBanner("Фильтруем по ID: " + ID);
 
         // Ждём появления формы фильтрации
         const checkForm = setInterval(() => {
@@ -159,11 +167,33 @@
                     if (applyButton) {
                         applyButton.click();
                         console.log(`Фильтр по ID=${id} применён`);
+                        showBanner("Применен фильтр по ID: " + ID);
                     }
                 }
             }
         }, 300);
     }
+
+    function showBanner(message) {
+    let banner = document.getElementById('automation-banner');
+    if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'automation-banner';
+        banner.style.position = 'fixed';
+        banner.style.top = '10px';
+        banner.style.right = '10px';
+        banner.style.backgroundColor = '#fff3cd';
+        banner.style.border = '1px solid #ffeeba';
+        banner.style.padding = '10px 20px';
+        banner.style.zIndex = '99999';
+        banner.style.fontFamily = 'Arial';
+        banner.style.fontSize = '14px';
+        banner.style.borderRadius = '5px';
+        document.body.appendChild(banner);
+    }
+    banner.innerText = message;
+    }
+
 
     // === Основной запуск ===
     function mainAction() {
