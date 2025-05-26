@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         ЕСУП-ПС Автофильтр по ID (v.7.0 | 2025-05-25)
+// @name         ЕСУП-ПС Автофильтр по ID (v.7.1 | 2025-05-26)
 // @namespace    http://tampermonkey.net/
-// @version      7.0
+// @version      7.1
 // @description  Быстрая фильтрация по ID в ЕСУП-ПС после полной загрузки таблицы
 // @author       zOnVolga
 // @match        https://esup-ps.megafon.ru/*
@@ -18,69 +18,77 @@
     if (window.scriptAlreadyRun) return;
     window.scriptAlreadyRun = true;
 
-    // === Вывод баннера на страницу ===
+    // === Вывод баннера на страницу (многоуровневый стек) ===
     function showBanner(message, type = 'info') {
-        let banner = document.getElementById('automation-banner');
+        const containerId = 'automation-banner-container';
+        let container = document.getElementById(containerId);
 
-        // Если баннер ещё не создан — создаём его
-        if (!banner) {
-            banner = document.createElement('div');
-            banner.id = 'automation-banner';
-            banner.style.position = 'fixed';
-            banner.style.top = '10px';
-            banner.style.right = '10px';
-            banner.style.zIndex = '99999';
-            banner.style.fontFamily = 'Arial, sans-serif';
-            banner.style.fontSize = '14px';
-            banner.style.borderRadius = '5px';
-            banner.style.padding = '10px 20px';
-            banner.style.maxWidth = '300px';
-            banner.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
-            banner.style.transition = 'opacity 0.5s ease-out';
-
-            document.body.appendChild(banner);
+        // Создаём контейнер, если его нет
+        if (!container) {
+            container = document.createElement('div');
+            container.id = containerId;
+            container.style.position = 'fixed';
+            container.style.top = '10px';
+            container.style.right = '10px';
+            container.style.zIndex = '99999';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column-reverse';
+            container.style.gap = '8px';
+            container.style.maxWidth = '90%';
+            container.style.listStyle = 'none';
+            container.style.padding = '0';
+            container.style.margin = '0';
+            document.body.appendChild(container);
         }
 
-        // Обновляем текст и стили в зависимости от типа
-        banner.textContent = message;
-
-        // Автоматически подбираем ширину по содержимому
-        banner.style.whiteSpace = 'nowrap';
-        const widthEstimate = banner.offsetWidth + 20;
-        banner.style.whiteSpace = 'normal';
+        // Создаём сам баннер
+        const banner = document.createElement('div');
+        banner.style.background = '#fff3cd';
+        banner.style.color = '#856404';
+        banner.style.borderLeft = '4px solid #856404';
+        banner.style.padding = '10px 15px';
+        banner.style.borderRadius = '4px';
+        banner.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+        banner.style.fontFamily = 'Arial, sans-serif';
+        banner.style.fontSize = '14px';
+        banner.style.opacity = '1';
+        banner.style.transition = 'opacity 0.5s ease-out';
+        banner.style.boxSizing = 'border-box';
         banner.style.width = 'max-content';
-        banner.style.maxWidth = '90%'; // ограничение на случай длинного текста
+        banner.style.maxWidth = '100%';
+        banner.style.wordBreak = 'break-word';
 
-        // Цвета
+        // === Цвета в зависимости от типа ===
         switch (type) {
             case 'error':
-                banner.style.backgroundColor = '#f8d7da';
+                banner.style.background = '#f8d7da';
                 banner.style.color = '#721c24';
+                banner.style.borderLeftColor = '#721c24';
+                banner.textContent = message
                 break;
             case 'success':
-                banner.style.backgroundColor = '#d4edda';
+                banner.style.background = '#d4edda';
                 banner.style.color = '#155724';
+                banner.style.borderLeftColor = '#155724';
+                banner.textContent = message;
                 break;
             default:
-                banner.style.backgroundColor = '#fff3cd';
-                banner.style.color = '#856404';
+                banner.textContent = message;
                 break;
         }
 
-        // Удаляем старый таймер, если он был
-        if (window.bannerTimeout) clearTimeout(window.bannerTimeout);
+        // Вставляем баннер сверху
+        container.insertBefore(banner, container.firstChild);
 
-        // Скрываем через 15 секунд
-        window.bannerTimeout = setTimeout(() => {
-            if (document.body.contains(banner)) {
-                banner.style.opacity = '0';
-                setTimeout(() => {
-                    if (document.body.contains(banner)) {
-                        banner.remove();
-                    }
-                }, 500);
-            }
-        }, 15000);
+        // Автоматическое исчезновение через 10 секунд
+        setTimeout(() => {
+            banner.style.opacity = '0';
+            setTimeout(() => {
+                if (banner.parentElement === container) {
+                    banner.remove();
+                }
+            }, 500);
+        }, 10000);
     }
 
     // Получаем параметры из URL
